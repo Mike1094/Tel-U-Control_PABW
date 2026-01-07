@@ -1,0 +1,518 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS Variables */
+:root {
+    --primary: #dc2626;
+    --primary-dark: #b91c1c;
+    --primary-light: #fef2f2;
+    --secondary: #1e40af;
+    --secondary-light: #dbeafe;
+    --accent: #f59e0b;
+    --accent-light: #fef3c7;
+    --success: #059669;
+    --success-light: #d1fae5;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --danger: #dc2626;
+    --danger-light: #fee2e2;
+    --info: #0284c7;
+    --info-light: #e0f2fe;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --sidebar-width: 260px;
+}
+
+/* Base Styles */
+body {
+    font-family: 'Inter', 'Figtree', sans-serif;
+    background-color: var(--gray-100);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gray-300);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-400);
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: var(--sidebar-width);
+    background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%);
+    min-height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 40;
+    transition: transform 0.3s ease-in-out;
+}
+
+.sidebar-link {
+    @apply flex items-center px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-lg mx-2 transition-all duration-200;
+}
+
+.sidebar-link.active {
+    @apply bg-white/20 text-white font-medium;
+}
+
+.sidebar-link svg {
+    @apply w-5 h-5 mr-3 flex-shrink-0;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: var(--sidebar-width);
+    min-height: 100vh;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+@media (max-width: 1024px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    
+    .main-content {
+        margin-left: 0;
+    }
+}
+
+/* Card Styles */
+.card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden;
+}
+
+.card-header {
+    @apply px-6 py-4 border-b border-gray-100 flex items-center justify-between;
+}
+
+.card-body {
+    @apply p-6;
+}
+
+/* Stat Cards */
+.stat-card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-200;
+}
+
+.stat-card.primary {
+    @apply border-l-4 border-l-red-500;
+}
+
+.stat-card.success {
+    @apply border-l-4 border-l-green-500;
+}
+
+.stat-card.warning {
+    @apply border-l-4 border-l-yellow-500;
+}
+
+.stat-card.info {
+    @apply border-l-4 border-l-blue-500;
+}
+
+.stat-card.danger {
+    @apply border-l-4 border-l-red-600;
+}
+
+/* Button Styles */
+.btn {
+    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.btn-primary {
+    @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+}
+
+.btn-secondary {
+    @apply bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500;
+}
+
+.btn-success {
+    @apply bg-green-600 text-white hover:bg-green-700 focus:ring-green-500;
+}
+
+.btn-warning {
+    @apply bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-yellow-400;
+}
+
+.btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+}
+
+.btn-outline {
+    @apply border-2 border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-500;
+}
+
+.btn-outline-primary {
+    @apply border-2 border-red-500 text-red-600 hover:bg-red-50 focus:ring-red-500;
+}
+
+.btn-sm {
+    @apply px-3 py-1.5 text-xs;
+}
+
+.btn-lg {
+    @apply px-6 py-3 text-base;
+}
+
+/* Badge Styles */
+.badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-primary {
+    @apply bg-red-100 text-red-800;
+}
+
+.badge-success {
+    @apply bg-green-100 text-green-800;
+}
+
+.badge-warning {
+    @apply bg-yellow-100 text-yellow-800;
+}
+
+.badge-danger {
+    @apply bg-red-100 text-red-800;
+}
+
+.badge-info {
+    @apply bg-blue-100 text-blue-800;
+}
+
+.badge-secondary {
+    @apply bg-gray-100 text-gray-800;
+}
+
+/* Role Badges */
+.role-badge-admin {
+    @apply bg-red-100 text-red-800 border border-red-200;
+}
+
+.role-badge-satpam {
+    @apply bg-yellow-100 text-yellow-800 border border-yellow-200;
+}
+
+.role-badge-civitas {
+    @apply bg-blue-100 text-blue-800 border border-blue-200;
+}
+
+.role-badge-warga {
+    @apply bg-green-100 text-green-800 border border-green-200;
+}
+
+/* Status Badges */
+.status-pending {
+    @apply bg-yellow-100 text-yellow-800;
+}
+
+.status-validated, .status-open {
+    @apply bg-blue-100 text-blue-800;
+}
+
+.status-in_progress {
+    @apply bg-purple-100 text-purple-800;
+}
+
+.status-completed, .status-resolved {
+    @apply bg-green-100 text-green-800;
+}
+
+.status-rejected {
+    @apply bg-red-100 text-red-800;
+}
+
+.status-claimed {
+    @apply bg-orange-100 text-orange-800;
+}
+
+/* Traffic Status */
+.traffic-lancar {
+    @apply bg-green-100 text-green-800 border border-green-200;
+}
+
+.traffic-padat {
+    @apply bg-yellow-100 text-yellow-800 border border-yellow-200;
+}
+
+.traffic-macet {
+    @apply bg-red-100 text-red-800 border border-red-200;
+}
+
+.traffic-tutup {
+    @apply bg-gray-100 text-gray-800 border border-gray-200;
+}
+
+/* Gate Status Indicator */
+.gate-indicator {
+    @apply w-3 h-3 rounded-full;
+}
+
+.gate-indicator.lancar {
+    @apply bg-green-500;
+}
+
+.gate-indicator.padat {
+    @apply bg-yellow-500;
+}
+
+.gate-indicator.macet {
+    @apply bg-red-500;
+}
+
+.gate-indicator.tutup {
+    @apply bg-gray-500;
+}
+
+/* Form Styles */
+.form-group {
+    @apply mb-4;
+}
+
+.form-label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+.form-input {
+    @apply w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500;
+}
+
+.form-select {
+    @apply w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500;
+}
+
+.form-textarea {
+    @apply w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500;
+}
+
+/* Table Styles */
+.data-table {
+    @apply min-w-full divide-y divide-gray-200;
+}
+
+.data-table thead {
+    @apply bg-gray-50;
+}
+
+.data-table th {
+    @apply px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider;
+}
+
+.data-table td {
+    @apply px-6 py-4 whitespace-nowrap text-sm text-gray-900;
+}
+
+.data-table tbody tr {
+    @apply bg-white hover:bg-gray-50 transition-colors;
+}
+
+.data-table tbody tr:not(:last-child) {
+    @apply border-b border-gray-100;
+}
+
+/* Alert Styles */
+.alert {
+    @apply p-4 rounded-lg mb-4 flex items-start;
+}
+
+.alert-success {
+    @apply bg-green-50 border border-green-200 text-green-800;
+}
+
+.alert-danger {
+    @apply bg-red-50 border border-red-200 text-red-800;
+}
+
+.alert-warning {
+    @apply bg-yellow-50 border border-yellow-200 text-yellow-800;
+}
+
+.alert-info {
+    @apply bg-blue-50 border border-blue-200 text-blue-800;
+}
+
+/* Empty State */
+.empty-state {
+    @apply text-center py-12;
+}
+
+.empty-state-icon {
+    @apply mx-auto h-12 w-12 text-gray-400;
+}
+
+.empty-state-title {
+    @apply mt-4 text-lg font-medium text-gray-900;
+}
+
+.empty-state-description {
+    @apply mt-2 text-sm text-gray-500;
+}
+
+/* Quick Actions Grid */
+.quick-actions {
+    @apply grid grid-cols-2 md:grid-cols-4 gap-4;
+}
+
+.quick-action-card {
+    @apply p-4 bg-white rounded-xl border border-gray-100 hover:shadow-md hover:border-red-200 transition-all cursor-pointer text-center;
+}
+
+.quick-action-card svg {
+    @apply w-8 h-8 mx-auto mb-2 text-red-500;
+}
+
+.quick-action-card span {
+    @apply text-sm font-medium text-gray-700;
+}
+
+/* Chart Container */
+.chart-container {
+    @apply relative h-64 md:h-80;
+}
+
+/* Notification Dot */
+.notification-dot {
+    @apply absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full;
+}
+
+/* Loading Spinner */
+.spinner {
+    @apply animate-spin h-5 w-5 text-current;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    @apply fixed inset-0 bg-black/50 z-50 flex items-center justify-center;
+}
+
+.modal-content {
+    @apply bg-white rounded-xl shadow-xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+}
+
+/* Tooltip */
+.tooltip {
+    @apply invisible absolute;
+}
+
+.has-tooltip:hover .tooltip {
+    @apply visible z-50;
+}
+
+/* Avatar */
+.avatar {
+    @apply inline-flex items-center justify-center rounded-full bg-gray-200 text-gray-600 font-semibold;
+}
+
+.avatar-sm {
+    @apply w-8 h-8 text-xs;
+}
+
+.avatar-md {
+    @apply w-10 h-10 text-sm;
+}
+
+.avatar-lg {
+    @apply w-12 h-12 text-base;
+}
+
+/* Progress Bar */
+.progress-bar {
+    @apply h-2 bg-gray-200 rounded-full overflow-hidden;
+}
+
+.progress-bar-fill {
+    @apply h-full bg-red-500 rounded-full transition-all duration-500;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    @apply absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50;
+}
+
+.dropdown-item {
+    @apply block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors;
+}
+
+/* Page Header */
+.page-header {
+    @apply mb-6;
+}
+
+.page-title {
+    @apply text-2xl font-bold text-gray-900;
+}
+
+.page-description {
+    @apply mt-1 text-sm text-gray-500;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    @apply flex items-center space-x-2 text-sm text-gray-500 mb-4;
+}
+
+.breadcrumb-item {
+    @apply hover:text-gray-700 transition-colors;
+}
+
+.breadcrumb-separator {
+    @apply text-gray-400;
+}
+
+/* Footer */
+.footer {
+    @apply mt-auto py-4 text-center text-sm text-gray-500 border-t border-gray-200;
+}
+
+/* Print Styles */
+@media print {
+    .sidebar, .no-print {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin-left: 0 !important;
+    }
+}
