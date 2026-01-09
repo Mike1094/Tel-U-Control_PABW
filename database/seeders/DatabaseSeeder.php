@@ -17,12 +17,12 @@ class DatabaseSeeder extends Seeder
         // Create or get users (idempotent)
         User::firstOrCreate(
             ['email' => 'admin@telkom.id'],
-            ['name' => 'Admin Telkom', 'password' => Hash::make('password'), 'role' => 'admin']
+            ['name' => 'Admin', 'password' => Hash::make('password'), 'role' => 'admin']
         );
 
         User::firstOrCreate(
             ['email' => 'satpam@telkom.id'],
-            ['name' => 'Pak Satpam', 'password' => Hash::make('password'), 'role' => 'satpam']
+            ['name' => 'Satpam', 'password' => Hash::make('password'), 'role' => 'satpam']
         );
 
         User::firstOrCreate(
@@ -31,10 +31,10 @@ class DatabaseSeeder extends Seeder
         );
 
         User::firstOrCreate(
-            ['email' => 'warga@telkom.id'],
-            ['name' => 'Warga Sekitar', 'password' => Hash::make('password'), 'role' => 'warga']
+            ['email' => 'warga@email.com'],
+            ['name' => 'Warga', 'password' => Hash::make('password'), 'role' => 'warga']
         );
-        
+
         // Additional dummy Civitas
         User::factory(5)->create([
             'role' => 'civitas'
