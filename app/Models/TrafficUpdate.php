@@ -9,7 +9,13 @@ class TrafficUpdate extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'user_id',
+        'location',
+        'status',
+        'description',
+        'image',
+    ];
 
     public function user()
     {
