@@ -20,19 +20,19 @@
             <p class="text-xs text-gray-500">Total Gate</p>
         </div>
         <div class="stat-card text-center border-l-4 border-l-green-500">
-            <p class="text-xl font-bold text-green-600">{{ $gates->where('status', 'lancar')->count() }}</p>
+            <p class="text-xl font-bold text-green-600">{{ $gates->where('traffic_status', 'lancar')->count() }}</p>
             <p class="text-xs text-gray-500">Lancar</p>
         </div>
         <div class="stat-card text-center border-l-4 border-l-yellow-500">
-            <p class="text-xl font-bold text-yellow-600">{{ $gates->where('status', 'padat')->count() }}</p>
+            <p class="text-xl font-bold text-yellow-600">{{ $gates->where('traffic_status', 'padat')->count() }}</p>
             <p class="text-xs text-gray-500">Padat</p>
         </div>
         <div class="stat-card text-center border-l-4 border-l-red-500">
-            <p class="text-xl font-bold text-red-600">{{ $gates->where('status', 'macet')->count() }}</p>
+            <p class="text-xl font-bold text-red-600">{{ $gates->where('traffic_status', 'macet')->count() }}</p>
             <p class="text-xs text-gray-500">Macet</p>
         </div>
         <div class="stat-card text-center border-l-4 border-l-gray-500">
-            <p class="text-xl font-bold text-gray-600">{{ $gates->where('status', 'tutup')->count() }}</p>
+            <p class="text-xl font-bold text-gray-600">{{ $gates->where('status', 'closed')->count() }}</p>
             <p class="text-xs text-gray-500">Tutup</p>
         </div>
     </div>
@@ -57,9 +57,10 @@
                     <thead>
                         <tr>
                             <th>Nama Gate</th>
-                            <th>Status</th>
+                            <th>Status Gate</th>
+                            <th>Status Lalu Lintas</th>
+                            <th>CCTV URL</th>
                             <th>Terakhir Diperbarui</th>
-                            <th>Oleh</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -68,17 +69,22 @@
                         <tr>
                             <td>
                                 <div class="flex items-center space-x-3">
-                                    <div class="gate-indicator {{ $gate->status ?? 'lancar' }}"></div>
-                                    <span class="font-medium">{{ $gate->name }}</span>
+                                    <div class="w-3 h-3 rounded-full {{ $gate->status == 'open' ? ($gate->traffic_status == 'lancar' ? 'bg-green-500' : ($gate->traffic_status == 'padat' ? 'bg-yellow-500' : 'bg-red-500')) : 'bg-gray-500' }}"></div>
+                                    <span class="font-medium">{{ $gate->nama_gerbang }}</span>
                                 </div>
                             </td>
                             <td>
-                                <span class="badge traffic-{{ $gate->status ?? 'lancar' }}">
-                                    {{ ucfirst($gate->status ?? 'lancar') }}
+                                <span class="badge {{ $gate->status == 'open' ? 'badge-success' : 'badge-secondary' }}">
+                                    {{ $gate->status == 'open' ? 'Buka' : 'Tutup' }}
                                 </span>
                             </td>
+                            <td>
+                                <span class="badge traffic-{{ $gate->traffic_status ?? 'lancar' }}">
+                                    {{ ucfirst($gate->traffic_status ?? 'lancar') }}
+                                </span>
+                            </td>
+                            <td class="text-gray-500 text-sm max-w-xs truncate">{{ $gate->cctv_url ?? '-' }}</td>
                             <td class="text-gray-500">{{ $gate->updated_at->format('d M Y H:i') }}</td>
-                            <td>{{ $gate->lastUpdatedBy->name ?? '-' }}</td>
                             <td>
                                 <div class="flex items-center space-x-2">
                                     <a href="{{ route('admin.gates.edit', $gate) }}" class="btn btn-sm btn-outline">

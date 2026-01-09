@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
-<<<<<<< HEAD
 use App\Http\Controllers\Api\CctvController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\GateController;
@@ -158,31 +157,4 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         Route::patch('/{user}/password', [UserController::class, 'updatePassword']);
         Route::delete('/{user}', [UserController::class, 'destroy']);
     });
-=======
-use App\Http\Controllers\Api\ReportController;
-use App\Http\Controllers\Api\LostFoundController;
-use App\Http\Controllers\Api\GateController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
-
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
-
-Route::middleware('auth:sanctum')->group(function () {
-
-    Route::get('/user', [AuthController::class, 'me']);
-    Route::post('/logout', [AuthController::class, 'logout']);
-
-    Route::apiResource('reports', ReportController::class);
-
-    Route::apiResource('lost-found', LostFoundController::class);
-
-    Route::get('/gates', [GateController::class, 'index']);
-    Route::get('/gates/{id}', [GateController::class, 'show']);
-    Route::post('/gates/{id}/update', [GateController::class, 'update']);
->>>>>>> 4cd04d578d3b87e47d112d6e41d12f317d5583a0
 });

@@ -1,0 +1,30 @@
+try {
+    echo "Checking Reports...\n";
+    $reportCount = \App\Models\Report::count();
+    echo "Total Reports: $reportCount\n";
+    
+    $pendingReports = \App\Models\Report::where('status', 'pending')->count();
+    echo "Pending Reports: $pendingReports\n";
+
+    echo "Checking Gates...\n";
+    $openGates = \App\Models\Gate::where('status', 'open')->count();
+    echo "Open Gates: $openGates\n";
+
+    echo "Checking LostFoundItems...\n";
+    $lostItems = \App\Models\LostFoundItem::where('jenis', 'hilang')->where('status', 'open')->count();
+    echo "Lost Items (Open): $lostItems\n";
+
+    echo "Checking Recent Reports...\n";
+    $recent = \App\Models\Report::with('user')->latest()->take(1)->get();
+    if ($recent->count() > 0) {
+        $r = $recent->first();
+        echo "Recent Report Title: " . $r->title . "\n";
+        // echo "Recent Report Judul (should be null or access error?): " . $r->judul . "\n"; 
+        // Note: accessing undefined property on Eloquent model returns null silently in most cases.
+    }
+
+    echo "VERIFICATION SUCCESSFUL: No Exceptions Thrown.\n";
+} catch (\Exception $e) {
+    echo "VERIFICATION FAILED: " . $e->getMessage() . "\n";
+    echo $e->getTraceAsString();
+}

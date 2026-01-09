@@ -12,22 +12,41 @@
 
                     <div class="form-group">
                         <label class="form-label">Nama Gate <span class="text-red-500">*</span></label>
-                        <input type="text" name="name" class="form-input @error('name') border-red-500 @enderror" 
-                               value="{{ old('name') }}" placeholder="Contoh: Gerbang Utama, Gerbang Belakang" required>
-                        @error('name')
+                        <input type="text" name="nama_gerbang" class="form-input @error('nama_gerbang') border-red-500 @enderror" 
+                               value="{{ old('nama_gerbang') }}" placeholder="Contoh: Gerbang Utama, Gerbang Belakang" required>
+                        @error('nama_gerbang')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Status <span class="text-red-500">*</span></label>
+                        <label class="form-label">Status Gate <span class="text-red-500">*</span></label>
                         <select name="status" class="form-select @error('status') border-red-500 @enderror" required>
-                            <option value="lancar" {{ old('status') == 'lancar' ? 'selected' : '' }}>🟢 Lancar</option>
-                            <option value="padat" {{ old('status') == 'padat' ? 'selected' : '' }}>🟡 Padat</option>
-                            <option value="macet" {{ old('status') == 'macet' ? 'selected' : '' }}>🔴 Macet</option>
-                            <option value="tutup" {{ old('status') == 'tutup' ? 'selected' : '' }}>⚫ Tutup</option>
+                            <option value="open" {{ old('status') == 'open' ? 'selected' : '' }}>🟢 Buka</option>
+                            <option value="closed" {{ old('status') == 'closed' ? 'selected' : '' }}>⚫ Tutup</option>
                         </select>
                         @error('status')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Status Lalu Lintas <span class="text-red-500">*</span></label>
+                        <select name="traffic_status" class="form-select @error('traffic_status') border-red-500 @enderror" required>
+                            <option value="lancar" {{ old('traffic_status') == 'lancar' ? 'selected' : '' }}>🟢 Lancar</option>
+                            <option value="padat" {{ old('traffic_status') == 'padat' ? 'selected' : '' }}>🟡 Padat</option>
+                            <option value="macet" {{ old('traffic_status') == 'macet' ? 'selected' : '' }}>🔴 Macet</option>
+                        </select>
+                        @error('traffic_status')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">CCTV URL (opsional)</label>
+                        <input type="url" name="cctv_url" class="form-input @error('cctv_url') border-red-500 @enderror" 
+                               value="{{ old('cctv_url') }}" placeholder="https://example.com/cctv-stream">
+                        @error('cctv_url')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>

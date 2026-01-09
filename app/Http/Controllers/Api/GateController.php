@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Gate;
-<<<<<<< HEAD
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,14 +28,25 @@ class GateController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'nama_gerbang' => 'required|string|max:255',
             'status' => 'sometimes|in:lancar,padat,macet,tutup',
         ]);
 
+        $status = 'open';
+        $trafficStatus = 'lancar';
+
+        if ($request->status === 'tutup') {
+            $status = 'closed';
+            // traffic_status keeps default 'lancar' or ignored
+        } else {
+            $status = 'open';
+            $trafficStatus = $request->status ?? 'lancar';
+        }
+
         $gate = Gate::create([
-            'name' => $request->name,
-            'status' => $request->status ?? 'lancar',
-            'is_open' => $request->status !== 'tutup',
+            'nama_gerbang' => $request->nama_gerbang,
+            'status' => $status,
+            'traffic_status' => $trafficStatus,
             'last_updated_by' => Auth::id(),
         ]);
 
@@ -64,19 +74,23 @@ class GateController extends Controller
     public function update(Request $request, Gate $gate)
     {
         $request->validate([
-            'name' => 'sometimes|string|max:255',
+            'nama_gerbang' => 'sometimes|string|max:255',
             'status' => 'sometimes|in:lancar,padat,macet,tutup',
         ]);
 
         $updateData = [];
         
-        if ($request->has('name')) {
-            $updateData['name'] = $request->name;
+        if ($request->has('nama_gerbang')) {
+            $updateData['nama_gerbang'] = $request->nama_gerbang;
         }
         
         if ($request->has('status')) {
-            $updateData['status'] = $request->status;
-            $updateData['is_open'] = $request->status !== 'tutup';
+            if ($request->status === 'tutup') {
+                $updateData['status'] = 'closed';
+            } else {
+                $updateData['status'] = 'open';
+                $updateData['traffic_status'] = $request->status;
+            }
         }
 
         $updateData['last_updated_by'] = Auth::id();
@@ -99,11 +113,18 @@ class GateController extends Controller
             'status' => 'required|in:lancar,padat,macet,tutup',
         ]);
 
-        $gate->update([
-            'status' => $request->status,
-            'is_open' => $request->status !== 'tutup',
+        $updateData = [
             'last_updated_by' => Auth::id(),
-        ]);
+        ];
+
+        if ($request->status === 'tutup') {
+            $updateData['status'] = 'closed';
+        } else {
+            $updateData['status'] = 'open';
+            $updateData['traffic_status'] = $request->status;
+        }
+
+        $gate->update($updateData);
 
         return response()->json([
             'success' => true,
@@ -134,10 +155,10 @@ class GateController extends Controller
         
         $summary = [
             'total' => $gates->count(),
-            'lancar' => $gates->where('status', 'lancar')->count(),
-            'padat' => $gates->where('status', 'padat')->count(),
-            'macet' => $gates->where('status', 'macet')->count(),
-            'tutup' => $gates->where('status', 'tutup')->count(),
+            'lancar' => $gates->where('status', 'open')->where('traffic_status', 'lancar')->count(),
+            'padat' => $gates->where('status', 'open')->where('traffic_status', 'padat')->count(),
+            'macet' => $gates->where('status', 'open')->where('traffic_status', 'macet')->count(),
+            'tutup' => $gates->where('status', 'closed')->count(),
         ];
 
         return response()->json([
@@ -146,60 +167,6 @@ class GateController extends Controller
                 'gates' => $gates->load('lastUpdatedBy'),
                 'summary' => $summary,
             ],
-=======
-use App\Models\TrafficUpdate;
-use Illuminate\Http\Request;
-
-class GateController extends Controller
-{
-    public function index()
-    {
-        $gates = Gate::all();
-        return response()->json($gates);
-    }
-
-    public function show($id)
-    {
-        $gate = Gate::find($id);
-        if (!$gate) {
-            return response()->json(['message' => 'Gate tidak ditemukan'], 404);
-        }
-        return response()->json($gate);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $gate = Gate::find($id);
-
-        if (!$gate) {
-            return response()->json(['message' => 'Gate tidak ditemukan'], 404);
-        }
-
-        $user = $request->user();
-        if (!in_array($user->role, ['satpam', 'admin'])) {
-            return response()->json(['message' => 'Unauthorized. Hanya Satpam/Admin.'], 403);
-        }
-
-        $validated = $request->validate([
-            'status' => 'sometimes|in:open,closed',
-            'traffic_status' => 'sometimes|in:lancar,padat,macet',
-        ]);
-
-        $gate->update($validated);
-
-        if ($request->has('traffic_status')) {
-            TrafficUpdate::create([
-                'gate_id' => $gate->id,
-                'user_id' => $user->id,
-                'status' => $request->traffic_status,
-                'description' => 'Update status via API'
-            ]);
-        }
-
-        return response()->json([
-            'message' => 'Status Gate berhasil diperbarui',
-            'data' => $gate
->>>>>>> 4cd04d578d3b87e47d112d6e41d12f317d5583a0
         ]);
     }
 }

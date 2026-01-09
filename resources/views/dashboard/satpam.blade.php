@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 <x-app-layout>
     <x-slot name="header">Dashboard Satpam</x-slot>
 
@@ -43,11 +43,15 @@
                 @else
                     <div class="space-y-4">
                         @foreach($gates as $gate)
+                        @php
+                            // Determine display status
+                            $displayStatus = $gate->status === 'closed' ? 'tutup' : ($gate->traffic_status ?? 'lancar');
+                        @endphp
                         <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                             <div class="flex items-center space-x-3">
-                                <div class="gate-indicator {{ $gate->status ?? 'lancar' }}"></div>
+                                <div class="gate-indicator {{ $displayStatus }}"></div>
                                 <div>
-                                    <p class="font-medium text-gray-900">{{ $gate->name }}</p>
+                                    <p class="font-medium text-gray-900">{{ $gate->nama_gerbang }}</p>
                                     <p class="text-xs text-gray-500">
                                         @if($gate->lastUpdatedBy)
                                             Diperbarui oleh {{ $gate->lastUpdatedBy->name }}
@@ -60,11 +64,11 @@
                             <form action="{{ route('gates.update', $gate) }}" method="POST" class="flex items-center space-x-2">
                                 @csrf
                                 @method('PATCH')
-                                <select name="status" class="form-select text-sm py-1.5 pr-8">
-                                    <option value="lancar" {{ ($gate->status ?? '') == 'lancar' ? 'selected' : '' }}>🟢 Lancar</option>
-                                    <option value="padat" {{ ($gate->status ?? '') == 'padat' ? 'selected' : '' }}>🟡 Padat</option>
-                                    <option value="macet" {{ ($gate->status ?? '') == 'macet' ? 'selected' : '' }}>🔴 Macet</option>
-                                    <option value="tutup" {{ ($gate->status ?? '') == 'tutup' ? 'selected' : '' }}>⚫ Tutup</option>
+                                <select name="traffic_status" class="form-select text-sm py-1.5 pr-8">
+                                    <option value="lancar" {{ $displayStatus == 'lancar' ? 'selected' : '' }}>🟢 Lancar</option>
+                                    <option value="padat" {{ $displayStatus == 'padat' ? 'selected' : '' }}>🟡 Padat</option>
+                                    <option value="macet" {{ $displayStatus == 'macet' ? 'selected' : '' }}>🔴 Macet</option>
+                                    <option value="tutup" {{ $displayStatus == 'tutup' ? 'selected' : '' }}>⚫ Tutup</option>
                                 </select>
                                 <button type="submit" class="btn btn-sm btn-primary">Update</button>
                             </form>
@@ -111,34 +115,8 @@
                     </button>
                 </form>
             </div>
-=======
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    @foreach($gates as $gate)
-    <div class="bg-white p-6 rounded-lg shadow">
-        <h3 class="font-bold text-xl">{{ $gate->nama_gerbang }}</h3>
-
-        <div class="mt-4">
-            <span class="text-gray-600">Status Pintu:</span>
-            <span class="px-2 py-1 rounded {{ $gate->status == 'open' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800' }}">
-                {{ strtoupper($gate->status) }}
-            </span>
->>>>>>> 4cd04d578d3b87e47d112d6e41d12f317d5583a0
         </div>
-
-        <form action="{{ route('gates.update', $gate->id) }}" method="POST" class="mt-4">
-            @csrf @method('PATCH')
-            <select name="status" class="border rounded p-1">
-                <option value="open" {{ $gate->status == 'open' ? 'selected' : '' }}>Open</option>
-                <option value="closed" {{ $gate->status == 'closed' ? 'selected' : '' }}>Closed</option>
-            </select>
-            <select name="traffic_status" class="border rounded p-1 ml-2">
-                <option value="lancar" {{ $gate->traffic_status == 'lancar' ? 'selected' : '' }}>Lancar</option>
-                <option value="macet" {{ $gate->traffic_status == 'macet' ? 'selected' : '' }}>Macet</option>
-            </select>
-            <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded ml-2">Update</button>
-        </form>
     </div>
-<<<<<<< HEAD
 
     <!-- Recent Traffic Updates -->
     <div class="card mb-8">
@@ -201,8 +179,8 @@
                     @foreach($foundItems as $item)
                     <div class="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
                         <div class="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
-                            @if($item->image)
-                                <img src="{{ Storage::url($item->image) }}" alt="{{ $item->item_name }}" class="w-full h-full object-cover rounded-lg">
+                            @if($item->foto)
+                                <img src="{{ Storage::url($item->foto) }}" alt="{{ $item->nama_barang }}" class="w-full h-full object-cover rounded-lg">
                             @else
                                 <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
@@ -210,8 +188,8 @@
                             @endif
                         </div>
                         <div class="flex-1">
-                            <p class="font-medium text-gray-900">{{ $item->item_name }}</p>
-                            <p class="text-sm text-gray-500">{{ $item->location }}</p>
+                            <p class="font-medium text-gray-900">{{ $item->nama_barang }}</p>
+                            <p class="text-sm text-gray-500">{{ $item->lokasi_ditemukan }}</p>
                             <p class="text-xs text-gray-400 mt-1">{{ $item->created_at->diffForHumans() }}</p>
                         </div>
                         <span class="badge badge-info">Ditemukan</span>
@@ -222,7 +200,3 @@
         </div>
     </div>
 </x-app-layout>
-=======
-    @endforeach
-</div>
->>>>>>> 4cd04d578d3b87e47d112d6e41d12f317d5583a0

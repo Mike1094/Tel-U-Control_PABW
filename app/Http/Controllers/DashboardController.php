@@ -32,13 +32,12 @@ class DashboardController extends Controller
 
     private function adminDashboard()
     {
-<<<<<<< HEAD
         // Main Stats
         $stats = [
             'reports_pending' => Report::where('status', 'pending')->count(),
             'reports_total' => Report::count(),
-            'lost_items' => LostFoundItem::where('type', 'lost')->where('status', 'open')->count(),
-            'found_items' => LostFoundItem::where('type', 'found')->where('status', 'open')->count(),
+            'lost_items' => LostFoundItem::where('jenis', 'hilang')->where('status', 'open')->count(),
+            'found_items' => LostFoundItem::where('jenis', 'ditemukan')->where('status', 'open')->count(),
         ];
 
         // Report Stats by Status
@@ -52,8 +51,8 @@ class DashboardController extends Controller
 
         // Lost Found Stats
         $lostFoundStats = [
-            'lost_open' => LostFoundItem::where('type', 'lost')->where('status', 'open')->count(),
-            'found_open' => LostFoundItem::where('type', 'found')->where('status', 'open')->count(),
+            'lost_open' => LostFoundItem::where('jenis', 'hilang')->where('status', 'open')->count(),
+            'found_open' => LostFoundItem::where('jenis', 'ditemukan')->where('status', 'open')->count(),
             'claimed' => LostFoundItem::where('status', 'claimed')->count(),
             'resolved' => LostFoundItem::where('status', 'resolved')->count(),
         ];
@@ -76,47 +75,17 @@ class DashboardController extends Controller
             'cctvCount',
             'pendingReports',
             'pendingLostFound'
-=======
-        // 1. Ambil data count untuk statistik
-        $total_reports = Report::count();
-        $pending_reports = Report::where('status', 'pending')->count();
-        $open_gates = Gate::where('status', 'open')->count();
-
-        // 2. Data tambahan untuk Admin (Lost & Found)
-        $lost_items = LostFoundItem::where('jenis', 'hilang')->where('status', 'open')->count();
-        $found_items = LostFoundItem::where('jenis', 'ditemukan')->where('status', 'open')->count();
-
-        // 3. Data Tabel Validasi
-        $recent_reports = Report::where('status', 'pending')->with('user')->latest()->take(5)->get();
-
-        // 4. Data Grafik Analisa Harian
-        $chart_data = Report::select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
-            ->groupBy('date')
-            ->orderBy('date', 'asc')
-            ->pluck('count', 'date');
-
-        // RETURN: Menggunakan compact() dengan nama variabel yang sesuai di View
-        return view('dashboard.admin', compact(
-            'total_reports',
-            'pending_reports',
-            'open_gates',
-            'recent_reports',
-            'chart_data',
-            'lost_items',
-            'found_items'
->>>>>>> 4cd04d578d3b87e47d112d6e41d12f317d5583a0
         ));
     }
 
     private function satpamDashboard()
     {
-<<<<<<< HEAD
         $gates = Gate::with('lastUpdatedBy')->get();
         $trafficUpdates = TrafficUpdate::with('user')->latest()->take(10)->get();
         
         // Found items to review
         $foundItems = LostFoundItem::with('user')
-            ->where('type', 'found')
+            ->where('jenis', 'ditemukan')
             ->whereIn('status', ['open', 'pending'])
             ->latest()
             ->take(5)
@@ -125,23 +94,17 @@ class DashboardController extends Controller
         // Gate stats
         $gateStats = [
             'total' => $gates->count(),
-            'lancar' => $gates->where('status', 'lancar')->count(),
-            'padat' => $gates->where('status', 'padat')->count(),
-            'macet' => $gates->where('status', 'macet')->count(),
-            'tutup' => $gates->where('status', 'tutup')->count(),
+            'lancar' => $gates->where('status', 'open')->where('traffic_status', 'lancar')->count(),
+            'padat' => $gates->where('status', 'open')->where('traffic_status', 'padat')->count(),
+            'macet' => $gates->where('status', 'open')->where('traffic_status', 'macet')->count(),
+            'tutup' => $gates->where('status', 'closed')->count(),
         ];
 
         return view('dashboard.satpam', compact('gates', 'trafficUpdates', 'foundItems', 'gateStats'));
-=======
-        $gates = Gate::all();
-        $trafficUpdates = TrafficUpdate::latest()->take(5)->get();
-        return view('dashboard.satpam', compact('gates', 'trafficUpdates'));
->>>>>>> 4cd04d578d3b87e47d112d6e41d12f317d5583a0
     }
 
     private function civitasDashboard()
     {
-<<<<<<< HEAD
         $userId = Auth::id();
 
         $myReports = Report::where('user_id', $userId)->latest()->get();
@@ -152,8 +115,8 @@ class DashboardController extends Controller
             'reports_total' => $myReports->count(),
             'reports_pending' => $myReports->where('status', 'pending')->count(),
             'reports_completed' => $myReports->where('status', 'completed')->count(),
-            'lost_items' => $myLostFound->where('type', 'lost')->count(),
-            'found_items' => $myLostFound->where('type', 'found')->count(),
+            'lost_items' => $myLostFound->where('jenis', 'hilang')->count(),
+            'found_items' => $myLostFound->where('jenis', 'ditemukan')->count(),
         ];
 
         // Gate & Traffic info
@@ -162,7 +125,7 @@ class DashboardController extends Controller
 
         // Public lost items
         $publicLostItems = LostFoundItem::with('user')
-            ->where('type', 'lost')
+            ->where('jenis', 'hilang')
             ->where('status', 'open')
             ->where('user_id', '!=', $userId)
             ->latest()
@@ -177,19 +140,10 @@ class DashboardController extends Controller
             'latestTraffic',
             'publicLostItems'
         ));
-=======
-        $myReports = Report::where('user_id', Auth::id())->latest()->take(5)->get();
-        $myLostFound = LostFoundItem::where('user_id', Auth::id())->latest()->take(5)->get();
-        $cctvs = $this->getMockCctvs();
-        $gates = Gate::all();
-
-        return view('dashboard.civitas', compact('myReports', 'myLostFound', 'cctvs', 'gates'));
->>>>>>> 4cd04d578d3b87e47d112d6e41d12f317d5583a0
     }
 
     private function wargaDashboard()
     {
-<<<<<<< HEAD
         // CCTVs
         $cctvs = Cctv::where('status', 'online')->get();
 
@@ -213,22 +167,5 @@ class DashboardController extends Controller
             ->get(['id', 'title', 'location', 'status', 'created_at']);
 
         return view('dashboard.warga', compact('cctvs', 'trafficUpdates', 'gates', 'publicReports'));
-=======
-        $cctvs = $this->getMockCctvs();
-        $trafficUpdates = TrafficUpdate::latest()->take(5)->get();
-        $gates = Gate::all();
-
-        return view('dashboard.warga', compact('cctvs', 'trafficUpdates', 'gates'));
-    }
-
-    private function getMockCctvs()
-    {
-        return [
-            ['name' => 'Gerbang Depan', 'status' => 'Online', 'image' => 'https://images.unsplash.com/photo-1565514020176-1c25039df8eb?auto=format&fit=crop&w=400&q=80'],
-            ['name' => 'Parkiran Gd. A', 'status' => 'Online', 'image' => 'https://images.unsplash.com/photo-1590674899505-1c5c4127193c?auto=format&fit=crop&w=400&q=80'],
-            ['name' => 'Kantin Asrama', 'status' => 'Maintenance', 'image' => 'https://images.unsplash.com/photo-1555447425-69bc336b7325?auto=format&fit=crop&w=400&q=80'],
-            ['name' => 'Perpustakaan', 'status' => 'Online', 'image' => 'https://images.unsplash.com/photo-1568667256549-094345857637?auto=format&fit=crop&w=400&q=80'],
-        ];
->>>>>>> 4cd04d578d3b87e47d112d6e41d12f317d5583a0
     }
 }
