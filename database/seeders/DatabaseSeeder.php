@@ -31,6 +31,11 @@ class DatabaseSeeder extends Seeder
         );
 
         User::firstOrCreate(
+            ['email' => 'dosen@telkom.id'],
+            ['name' => 'Dosen Telkom', 'password' => Hash::make('password'), 'role' => 'civitas']
+        );
+
+        User::firstOrCreate(
             ['email' => 'warga@email.com'],
             ['name' => 'Warga', 'password' => Hash::make('password'), 'role' => 'warga']
         );
