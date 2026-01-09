@@ -13,7 +13,7 @@ class GateController extends Controller
      */
     public function index()
     {
-        $gates = Gate::with('lastUpdatedBy')->get();
+        $gates = Gate::latest()->get();
         return view('admin.gates.index', compact('gates'));
     }
 
@@ -31,15 +31,17 @@ class GateController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'status' => 'required|in:lancar,padat,macet,tutup',
+            'nama_gerbang' => 'required|string|max:255',
+            'traffic_status' => 'required|in:lancar,padat,macet',
+            'status' => 'required|in:open,closed',
+            'cctv_url' => 'nullable|string|url',
         ]);
 
         Gate::create([
-            'name' => $request->name,
+            'nama_gerbang' => $request->nama_gerbang,
             'status' => $request->status,
-            'is_open' => $request->status !== 'tutup',
-            'last_updated_by' => Auth::id(),
+            'traffic_status' => $request->traffic_status,
+            'cctv_url' => $request->cctv_url,
         ]);
 
         return redirect()->route('admin.gates.index')->with('success', 'Gate berhasil ditambahkan!');
@@ -59,15 +61,17 @@ class GateController extends Controller
     public function update(Request $request, Gate $gate)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'status' => 'required|in:lancar,padat,macet,tutup',
+            'nama_gerbang' => 'required|string|max:255',
+            'traffic_status' => 'required|in:lancar,padat,macet',
+            'status' => 'required|in:open,closed',
+            'cctv_url' => 'nullable|url',
         ]);
 
         $gate->update([
-            'name' => $request->name,
+            'nama_gerbang' => $request->nama_gerbang,
             'status' => $request->status,
-            'is_open' => $request->status !== 'tutup',
-            'last_updated_by' => Auth::id(),
+            'traffic_status' => $request->traffic_status,
+            'cctv_url' => $request->cctv_url,
         ]);
 
         return redirect()->route('admin.gates.index')->with('success', 'Gate berhasil diperbarui!');

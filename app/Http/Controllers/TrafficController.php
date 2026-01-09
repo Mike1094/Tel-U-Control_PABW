@@ -4,17 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Gate;
 use App\Models\TrafficUpdate;
-use App\Models\User;
-use App\Notifications\TrafficInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Notification;
 
 class TrafficController extends Controller
 {
     public function index()
     {
-        $gates = Gate::with('lastUpdatedBy')->get();
+        $gates = Gate::latest()->get();
         $trafficUpdates = TrafficUpdate::with('user')->latest()->take(20)->get();
         return view('traffic.index', compact('gates', 'trafficUpdates'));
     }
@@ -33,7 +30,7 @@ class TrafficController extends Controller
             $imagePath = $request->file('image')->store('traffic-images', 'public');
         }
 
-        $trafficUpdate = TrafficUpdate::create([
+        TrafficUpdate::create([
             'user_id' => Auth::id(),
             'location' => $request->location,
             'status' => $request->status,
@@ -41,29 +38,24 @@ class TrafficController extends Controller
             'image' => $imagePath,
         ]);
 
-        // Notify all Civitas
-        $civitasUsers = User::where('role', 'civitas')->get();
-        Notification::send($civitasUsers, new TrafficInfo($trafficUpdate));
-
-        return back()->with('success', 'Update lalu lintas berhasil & notifikasi dikirim ke Civitas!');
+        return back()->with('success', 'Update lalu lintas berhasil dikirim!');
     }
 
     public function updateGate(Request $request, Gate $gate)
     {
         $request->validate([
-            'status' => 'required|in:lancar,padat,macet,tutup',
+            'traffic_status' => 'required|in:lancar,padat,macet',
         ]);
 
         $gate->update([
-            'status' => $request->status,
-            'last_updated_by' => Auth::id(),
+            'traffic_status' => $request->traffic_status,
         ]);
 
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Status gerbang diperbarui!',
-                'new_status' => $gate->status,
+                'new_status' => $gate->traffic_status,
             ]);
         }
 

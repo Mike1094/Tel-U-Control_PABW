@@ -89,10 +89,7 @@ use App\Http\Controllers\CctvController;
 use App\Http\Controllers\GateController;
 use Illuminate\Support\Facades\Route;
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 4cd04d578d3b87e47d112d6e41d12f317d5583a0
 Route::get('/', function () {
     return view('welcome');
 });
@@ -102,7 +99,6 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 
 // --- BAGIAN LAPORAN KERUSAKAN (REPORTS) ---
-<<<<<<< HEAD
 Route::resource('reports', ReportController::class)
     ->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy'])
     ->middleware(['auth', 'verified']);
@@ -121,21 +117,6 @@ Route::resource('lost-found', LostFoundController::class)
 Route::patch('lost-found/{lostFoundItem}/update-status', [LostFoundController::class, 'updateStatus'])
     ->name('lost-found.update-status')
     ->middleware(['auth', 'verified']);
-
-=======
-Route::middleware('auth')->group(function () {
-    Route::resource('reports', ReportController::class);
-    Route::patch('reports/{report}/update-status', [ReportController::class, 'updateStatus'])
-        ->name('reports.update-status');
-});
-
-// --- BAGIAN BARANG HILANG (LOST FOUND) ---
-Route::middleware('auth')->group(function () {
-    Route::resource('lost-found', LostFoundController::class);
-    Route::patch('lost-found/{lostFoundItem}/update-status', [LostFoundController::class, 'updateStatus'])
-        ->name('lost-found.update-status');
-});
->>>>>>> 4cd04d578d3b87e47d112d6e41d12f317d5583a0
 
 // --- BAGIAN TRAFFIC & GATES ---
 Route::middleware('auth')->group(function () {
@@ -157,7 +138,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-<<<<<<< HEAD
 
 // --- BAGIAN ADMIN ---
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -184,14 +164,6 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::get('/gates/{gate}/edit', [GateController::class, 'edit'])->name('gates.edit');
     Route::put('/gates/{gate}', [GateController::class, 'update'])->name('gates.update');
     Route::delete('/gates/{gate}', [GateController::class, 'destroy'])->name('gates.destroy');
-=======
-// --- BAGIAN ADMIN USER MANAGEMENT ---
-// Tambahkan middleware 'role:admin' di sini agar aman
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
-    Route::get('/admin/users/create', [AdminUserController::class, 'create'])->name('admin.users.create');
-    Route::post('/admin/users', [AdminUserController::class, 'store'])->name('admin.users.store');
->>>>>>> 4cd04d578d3b87e47d112d6e41d12f317d5583a0
 });
 
 require __DIR__.'/auth.php';

@@ -6,13 +6,13 @@
             <p class="text-gray-500">Kelola dan lihat laporan barang hilang dan temuan</p>
         </div>
         <div class="flex space-x-2">
-            <a href="{{ route('lost-found.create') }}?type=lost" class="btn btn-danger">
+            <a href="{{ route('lost-found.create') }}?jenis=hilang" class="btn btn-danger">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
                 Lapor Hilang
             </a>
-            <a href="{{ route('lost-found.create') }}?type=found" class="btn btn-success">
+            <a href="{{ route('lost-found.create') }}?jenis=ditemukan" class="btn btn-success">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
@@ -24,16 +24,16 @@
     <!-- Stats -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div class="stat-card text-center border-l-4 border-l-red-500">
-            <p class="text-xl font-bold text-red-600">{{ $items->where('type', 'lost')->count() }}</p>
+            <p class="text-xl font-bold text-red-600">{{ $items->where('jenis', 'hilang')->count() }}</p>
             <p class="text-xs text-gray-500">Barang Hilang</p>
         </div>
         <div class="stat-card text-center border-l-4 border-l-blue-500">
-            <p class="text-xl font-bold text-blue-600">{{ $items->where('type', 'found')->count() }}</p>
+            <p class="text-xl font-bold text-blue-600">{{ $items->where('jenis', 'ditemukan')->count() }}</p>
             <p class="text-xs text-gray-500">Barang Temuan</p>
         </div>
         <div class="stat-card text-center border-l-4 border-l-yellow-500">
-            <p class="text-xl font-bold text-yellow-600">{{ $items->where('status', 'pending')->count() }}</p>
-            <p class="text-xs text-gray-500">Pending</p>
+            <p class="text-xl font-bold text-yellow-600">{{ $items->where('status', 'open')->count() }}</p>
+            <p class="text-xs text-gray-500">Open</p>
         </div>
         <div class="stat-card text-center border-l-4 border-l-green-500">
             <p class="text-xl font-bold text-green-600">{{ $items->where('status', 'claimed')->count() }}</p>
@@ -58,12 +58,12 @@
             @else
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($items as $item)
-                    <div class="border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-shadow {{ $item->type == 'lost' ? 'hover:border-red-300' : 'hover:border-blue-300' }}">
+                    <div class="border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-shadow {{ $item->jenis == 'hilang' ? 'hover:border-red-300' : 'hover:border-blue-300' }}">
                         <!-- Image -->
                         <div class="aspect-video bg-gray-100 relative">
-                            @if($item->image)
-                                <a href="{{ Storage::url($item->image) }}" target="_blank" rel="noopener noreferrer" class="block w-full h-full group">
-                                    <img src="{{ Storage::url($item->image) }}" alt="{{ $item->item_name }}" class="w-full h-full object-cover">
+                            @if($item->foto)
+                                <a href="{{ Storage::url($item->foto) }}" target="_blank" rel="noopener noreferrer" class="block w-full h-full group">
+                                    <img src="{{ Storage::url($item->foto) }}" alt="{{ $item->nama_barang }}" class="w-full h-full object-cover">
                                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                         <div class="bg-white/90 rounded-full p-3">
                                             <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,15 +73,15 @@
                                     </div>
                                 </a>
                             @else
-                                <div class="w-full h-full flex items-center justify-center {{ $item->type == 'lost' ? 'bg-red-50' : 'bg-blue-50' }}">
-                                    <svg class="w-16 h-16 {{ $item->type == 'lost' ? 'text-red-300' : 'text-blue-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="w-full h-full flex items-center justify-center {{ $item->jenis == 'hilang' ? 'bg-red-50' : 'bg-blue-50' }}">
+                                    <svg class="w-16 h-16 {{ $item->jenis == 'hilang' ? 'text-red-300' : 'text-blue-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                                     </svg>
                                 </div>
                             @endif
                             <div class="absolute top-3 left-3">
-                                <span class="badge {{ $item->type == 'lost' ? 'badge-danger' : 'badge-info' }} text-sm">
-                                    {{ $item->type == 'lost' ? 'HILANG' : 'DITEMUKAN' }}
+                                <span class="badge {{ $item->jenis == 'hilang' ? 'badge-danger' : 'badge-info' }} text-sm">
+                                    {{ $item->jenis == 'hilang' ? 'HILANG' : 'DITEMUKAN' }}
                                 </span>
                             </div>
                             <div class="absolute top-3 right-3">
@@ -91,15 +91,15 @@
 
                         <!-- Content -->
                         <div class="p-4">
-                            <h4 class="font-semibold text-gray-900 text-lg">{{ $item->item_name }}</h4>
+                            <h4 class="font-semibold text-gray-900 text-lg">{{ $item->nama_barang }}</h4>
                             <p class="text-sm text-gray-500 flex items-center mt-1">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 </svg>
-                                {{ $item->location }}
+                                {{ $item->lokasi_ditemukan ?? '-' }}
                             </p>
-                            <p class="text-sm text-gray-600 mt-2 line-clamp-2">{{ $item->description }}</p>
+                            <p class="text-sm text-gray-600 mt-2 line-clamp-2">{{ $item->deskripsi }}</p>
                             
                             <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
                                 <div class="flex items-center space-x-2">
@@ -111,8 +111,8 @@
                                 </div>
                                 
                                 <div class="flex space-x-1">
-                                    @if($item->type == 'lost' && $item->status == 'open' && Auth::id() != $item->user_id)
-                                        <a href="{{ route('lost-found.create') }}?type=found&linked_lost_id={{ $item->id }}" class="btn btn-sm btn-success" title="Saya menemukan ini">
+                                    @if($item->jenis == 'hilang' && $item->status == 'open' && Auth::id() != $item->user_id)
+                                        <a href="{{ route('lost-found.create') }}?jenis=ditemukan&linked_lost_id={{ $item->id }}" class="btn btn-sm btn-success" title="Saya menemukan ini">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                             </svg>

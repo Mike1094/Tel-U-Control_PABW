@@ -1,14 +1,10 @@
 <?php
-<<<<<<< HEAD
 
-=======
->>>>>>> 4cd04d578d3b87e47d112d6e41d12f317d5583a0
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Report;
 use Illuminate\Http\Request;
-<<<<<<< HEAD
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -35,6 +31,7 @@ class ReportController extends Controller
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
+                // Map search to DB columns
                 $q->where('title', 'like', "%{$search}%")
                     ->orWhere('description', 'like', "%{$search}%")
                     ->orWhere('location', 'like', "%{$search}%");
@@ -43,6 +40,13 @@ class ReportController extends Controller
 
         // Sorting
         $sortBy = $request->get('sort_by', 'created_at');
+        // Map Indonesian params to DB columns
+        if ($sortBy === 'judul') $sortBy = 'title';
+        if ($sortBy === 'deskripsi') $sortBy = 'description';
+        if ($sortBy === 'lokasi') $sortBy = 'location';
+        // Handle direct English param usage too
+        if ($sortBy === 'title') $sortBy = 'title';
+        
         $sortOrder = $request->get('sort_order', 'desc');
         $query->orderBy($sortBy, $sortOrder);
 
@@ -62,22 +66,23 @@ class ReportController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'location' => 'required|string|max:255',
-            'image' => 'nullable|image|max:2048',
+            'judul' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+            'lokasi' => 'required|string|max:255',
+            'foto' => 'nullable|image|max:2048',
         ]);
 
         $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('reports', 'public');
+        if ($request->hasFile('foto')) {
+            $imagePath = $request->file('foto')->store('reports', 'public');
         }
 
+        // Map inputs to DB columns
         $report = Report::create([
             'user_id' => Auth::id(),
-            'title' => $request->title,
-            'description' => $request->description,
-            'location' => $request->location,
+            'title' => $request->judul,
+            'description' => $request->deskripsi,
+            'location' => $request->lokasi,
             'image' => $imagePath,
             'status' => 'pending',
         ]);
@@ -114,10 +119,10 @@ class ReportController extends Controller
         }
 
         $request->validate([
-            'title' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string',
-            'location' => 'sometimes|string|max:255',
-            'image' => 'nullable|image|max:2048',
+            'judul' => 'sometimes|string|max:255',
+            'deskripsi' => 'sometimes|string',
+            'lokasi' => 'sometimes|string|max:255',
+            'foto' => 'nullable|image|max:2048',
             'status' => 'sometimes|in:pending,validated,in_progress,completed,rejected',
             'feedback' => 'nullable|string',
         ]);
@@ -128,15 +133,22 @@ class ReportController extends Controller
             $request->request->remove('feedback');
         }
 
-        if ($request->hasFile('image')) {
+        $updateData = [];
+        if ($request->has('judul')) $updateData['title'] = $request->judul;
+        if ($request->has('deskripsi')) $updateData['description'] = $request->deskripsi;
+        if ($request->has('lokasi')) $updateData['location'] = $request->lokasi;
+        if ($request->has('status')) $updateData['status'] = $request->status;
+        if ($request->has('feedback')) $updateData['feedback'] = $request->feedback;
+
+        if ($request->hasFile('foto')) {
             // Delete old image
             if ($report->image) {
                 Storage::disk('public')->delete($report->image);
             }
-            $report->image = $request->file('image')->store('reports', 'public');
+            $updateData['image'] = $request->file('foto')->store('reports', 'public');
         }
 
-        $report->update($request->only(['title', 'description', 'location', 'status', 'feedback']));
+        $report->update($updateData);
 
         return response()->json([
             'success' => true,
@@ -213,44 +225,5 @@ class ReportController extends Controller
             'success' => true,
             'data' => $stats,
         ]);
-=======
-
-class ReportController extends Controller
-{
-    // GET All Reports (Mendukung filter status untuk admin)
-    public function index(Request $request)
-    {
-        $query = Report::with('user');
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
-        }
-        return response()->json($query->get());
-    }
-
-    // POST Create Report
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'judul' => 'required|string',
-            'deskripsi' => 'required|string',
-            'lokasi' => 'required|string',
-            'foto' => 'nullable|image|max:2048',
-        ]);
-
-        $path = null;
-        if ($request->hasFile('foto')) {
-            $path = $request->file('foto')->store('reports', 'public');
-        }
-
-        $report = Report::create([
-            'user_id' => $request->user()->id,
-            'judul' => $validated['judul'],
-            'deskripsi' => $validated['deskripsi'],
-            'lokasi' => $validated['lokasi'],
-            'foto' => $path,
-        ]);
-
-        return response()->json(['message' => 'Laporan berhasil dibuat', 'data' => $report], 201);
->>>>>>> 4cd04d578d3b87e47d112d6e41d12f317d5583a0
     }
 }

@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 <x-app-layout>
     <x-slot name="header">Dashboard Satpam</x-slot>
 
@@ -111,18 +111,6 @@
                     </button>
                 </form>
             </div>
-=======
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    @foreach($gates as $gate)
-    <div class="bg-white p-6 rounded-lg shadow">
-        <h3 class="font-bold text-xl">{{ $gate->nama_gerbang }}</h3>
-
-        <div class="mt-4">
-            <span class="text-gray-600">Status Pintu:</span>
-            <span class="px-2 py-1 rounded {{ $gate->status == 'open' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800' }}">
-                {{ strtoupper($gate->status) }}
-            </span>
->>>>>>> 4cd04d578d3b87e47d112d6e41d12f317d5583a0
         </div>
 
         <form action="{{ route('gates.update', $gate->id) }}" method="POST" class="mt-4">
@@ -138,7 +126,7 @@
             <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded ml-2">Update</button>
         </form>
     </div>
-<<<<<<< HEAD
+
 
     <!-- Recent Traffic Updates -->
     <div class="card mb-8">
@@ -222,7 +210,4 @@
         </div>
     </div>
 </x-app-layout>
-=======
-    @endforeach
-</div>
->>>>>>> 4cd04d578d3b87e47d112d6e41d12f317d5583a0
+

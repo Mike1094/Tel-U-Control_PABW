@@ -25,39 +25,34 @@
                             <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                                 <div class="flex items-center space-x-3">
                                     <div class="w-12 h-12 rounded-full flex items-center justify-center
-                                        {{ ($gate->status ?? 'lancar') == 'lancar' ? 'bg-green-100' : (($gate->status ?? '') == 'padat' ? 'bg-yellow-100' : (($gate->status ?? '') == 'macet' ? 'bg-red-100' : 'bg-gray-100')) }}">
+                                        {{ $gate->status == 'closed' ? 'bg-gray-100' : ($gate->traffic_status == 'lancar' ? 'bg-green-100' : ($gate->traffic_status == 'padat' ? 'bg-yellow-100' : 'bg-red-100')) }}">
                                         <svg class="w-6 h-6 
-                                            {{ ($gate->status ?? 'lancar') == 'lancar' ? 'text-green-600' : (($gate->status ?? '') == 'padat' ? 'text-yellow-600' : (($gate->status ?? '') == 'macet' ? 'text-red-600' : 'text-gray-600')) }}" 
+                                            {{ $gate->status == 'closed' ? 'text-gray-600' : ($gate->traffic_status == 'lancar' ? 'text-green-600' : ($gate->traffic_status == 'padat' ? 'text-yellow-600' : 'text-red-600')) }}" 
                                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4"/>
                                         </svg>
                                     </div>
                                     <div>
-                                        <p class="font-semibold text-gray-900">{{ $gate->name }}</p>
+                                        <p class="font-semibold text-gray-900">{{ $gate->nama_gerbang }}</p>
                                         <p class="text-xs text-gray-500">
-                                            @if($gate->lastUpdatedBy)
-                                                Update: {{ $gate->updated_at->diffForHumans() }}
-                                            @else
-                                                -
-                                            @endif
+                                            {{ $gate->status == 'closed' ? 'Tutup' : ucfirst($gate->traffic_status ?? 'lancar') }}
                                         </p>
                                     </div>
                                 </div>
                                 
-                                @if(Auth::user()->role == 'admin' || Auth::user()->role == 'satpam')
+                                @if((Auth::user()->role == 'admin' || Auth::user()->role == 'satpam') && $gate->status == 'open')
                                 <form action="{{ route('gates.update', $gate) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
-                                    <select name="status" onchange="this.form.submit()" class="form-select text-sm py-1.5">
-                                        <option value="lancar" {{ ($gate->status ?? '') == 'lancar' ? 'selected' : '' }}>🟢 Lancar</option>
-                                        <option value="padat" {{ ($gate->status ?? '') == 'padat' ? 'selected' : '' }}>🟡 Padat</option>
-                                        <option value="macet" {{ ($gate->status ?? '') == 'macet' ? 'selected' : '' }}>🔴 Macet</option>
-                                        <option value="tutup" {{ ($gate->status ?? '') == 'tutup' ? 'selected' : '' }}>⚫ Tutup</option>
+                                    <select name="traffic_status" onchange="this.form.submit()" class="form-select text-sm py-1.5">
+                                        <option value="lancar" {{ ($gate->traffic_status ?? '') == 'lancar' ? 'selected' : '' }}>🟢 Lancar</option>
+                                        <option value="padat" {{ ($gate->traffic_status ?? '') == 'padat' ? 'selected' : '' }}>🟡 Padat</option>
+                                        <option value="macet" {{ ($gate->traffic_status ?? '') == 'macet' ? 'selected' : '' }}>🔴 Macet</option>
                                     </select>
                                 </form>
                                 @else
-                                <span class="badge traffic-{{ $gate->status ?? 'lancar' }} text-sm">
-                                    {{ ucfirst($gate->status ?? 'lancar') }}
+                                <span class="badge traffic-{{ $gate->status == 'closed' ? 'tutup' : ($gate->traffic_status ?? 'lancar') }} text-sm">
+                                    {{ $gate->status == 'closed' ? 'Tutup' : ucfirst($gate->traffic_status ?? 'lancar') }}
                                 </span>
                                 @endif
                             </div>
